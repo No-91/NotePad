@@ -26,7 +26,7 @@
 
 功能一实现：NoteList中显示条目增加时间戳显示
 1.在notelist_item.xml布局中，添加Textview显示时间戳
-
+```
 <TextView
        android:id="@+id/text2"
        android:layout_width="match_parent"
@@ -39,3 +39,12 @@
        android:layout_weight="1"
        android:layout_margin="0dp"
        />
+```
+2.在NoteEditor中添加SimpleDateFormat调整时间类型
+```
+Date nowTime = new Date(System.currentTimeMillis());
+               SimpleDateFormat sdFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String retStrFormatNowDate = sdFormatter.format(nowTime);
+        ContentValues values = new ContentValues();
+        values.put(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE, retStrFormatNowDate);
+```
