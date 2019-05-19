@@ -315,3 +315,35 @@ public class NoteColor extends Activity {
 
 6.运行显示截图：
 
+更改之前默认为白色：
+
+![iamge](https://github.com/No-91/NotePad/blob/master/images/333.png)
+
+更改为蓝色：
+
+![iamge](https://github.com/No-91/NotePad/blob/master/images/444.png)
+
+💚功能三实现：更改记事本的背景颜色：
+
+在editor_options_menu.xml中添加一个更改背景的选项：
+
+```
+<item android:id="@+id/menu_color"
+        android:title="@string/menu_color"
+        android:icon="@drawable/change_background_color"
+        app:showAsAction="always" >
+    </item>
+
+```
+在NoteEditor中添加changecolor()，在显示的7种颜色中选择一种背景颜色：
+
+默认背景为白色：
+
+
+选择颜色：
+
+
+更改后：
+
+
+
