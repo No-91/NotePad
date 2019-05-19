@@ -56,3 +56,49 @@ Date nowTime = new Date(System.currentTimeMillis());
 
 
 ![image](https://github.com/No-91/NotePad/blob/master/images/111.png)
+
+💚功能二实现：添加笔记查询功能（根据标题查询）
+1.在NoteList.java中添加searchview实现查询功能
+
+```
+    private void SearchView(){
+        searchView=findViewById(R.id.sv);
+        searchView.onActionViewExpanded();
+        searchView.setQueryHint("输入搜索笔记内容");
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if(!s.equals("")){
+                    String selection=NotePad.Notes.COLUMN_NAME_TITLE+" GLOB '*"+s+"*'";
+                    updatecursor = getContentResolver().query(
+                            getIntent().getData(),            // 使用提供程序的默认内容URI。
+                            PROJECTION,                       // 返回每个便笺的便笺ID和标题。
+                            selection,                        // 没有WHERE子句，返回所有记录。
+                            null,                             
+                            NotePad.Notes.DEFAULT_SORT_ORDER  // 使用默认排序顺序。
+                    );
+                    if(updatecursor.moveToNext())
+                        Log.i("daawdwad",selection);
+                }
+                else {
+                    updatecursor = getContentResolver().query(
+                            getIntent().getData(),            // 使用提供程序的默认内容URI。
+                            PROJECTION,                       // 返回每个便笺的便笺ID和标题。
+                            null,                           
+                            null,                             // 没有WHERE子句，因此没有WHERE列值。
+                            NotePad.Notes.DEFAULT_SORT_ORDER  // 使用默认排序顺序。
+                    );
+                }
+                adapter.swapCursor(updatecursor);
+                return false;
+            }
+        });
+    }
+```
+2.运行显示效果：
