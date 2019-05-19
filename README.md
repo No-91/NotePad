@@ -105,3 +105,213 @@ Date nowTime = new Date(System.currentTimeMillis());
 2.运行显示效果：
 
 ![iamge](https://github.com/No-91/NotePad/blob/master/images/222.png)
+
+
+💚功能三实现：UI美化--更改主题颜色，美化UI界面；
+
+1.自定义一个MyCursorAdapter类继承SimpleCursorAdapter，完成cursor读取的数据库内容填充到item，将颜色填充：
+
+```
+public class MyCursorAdapter extends SimpleCursorAdapter {
+    public MyCursorAdapter(Context context, int layout, Cursor c,
+                           String[] from, int[] to) {
+        super(context, layout, c, from, to);
+    }
+    @Override
+    public void bindView(View view, Context context, Cursor cursor){
+        super.bindView(view, context, cursor);
+        //从数据库中读取的cursor中获取笔记列表对应的颜色数据，并设置笔记颜色
+        int x = cursor.getInt(cursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_BACK_COLOR));
+        
+        switch (x){
+            case NotePad.Notes.DEFAULT_COLOR:
+                view.setBackgroundColor(Color.rgb(255, 255, 255));
+                break;
+            case NotePad.Notes.YELLOW_COLOR:
+                view.setBackgroundColor(Color.rgb(247, 216, 133));
+                break;
+            case NotePad.Notes.BLUE_COLOR:
+                view.setBackgroundColor(Color.rgb(165, 202, 237));
+                break;
+            case NotePad.Notes.GREEN_COLOR:
+                view.setBackgroundColor(Color.rgb(161, 214, 174));
+                break;
+            case NotePad.Notes.RED_COLOR:
+                view.setBackgroundColor(Color.rgb(244, 149, 133));
+                break;
+            case NotePad.Notes.PINK_COLOR:
+                view.setBackgroundColor(Color.rgb(255, 192, 203));
+                break;
+            case NotePad.Notes.VIOLET_COLOR:
+                view.setBackgroundColor(Color.rgb(221, 160, 221));
+                break;
+            default:
+                view.setBackgroundColor(Color.rgb(255, 255, 255));
+                break;
+        }
+    }
+}
+```
+
+2.在NoteColor.java文件处理更换背景颜色操作：
+```
+public class NoteColor extends Activity {
+    private Cursor mCursor;
+    private Uri mUri;
+    private int color;
+    private static final int COLUMN_INDEX_TITLE = 1;
+    private static final String[] PROJECTION = new String[] {
+            NotePad.Notes._ID, // 0
+            NotePad.Notes.COLUMN_NAME_BACK_COLOR,
+    };
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.note_color);
+        //从NoteEditor传入的uri
+        mUri = getIntent().getData();
+        mCursor = managedQuery(
+                mUri,        // The URI for the note that is to be retrieved.
+                PROJECTION,  // The columns to retrieve
+                null,        // No selection criteria are used, so no where columns are needed.
+                null,        // No where columns are used, so no where values are needed.
+                null         // No sort order is needed.
+        );
+    }
+    @Override
+    protected void onResume(){
+        //执行顺序在onCreate之后
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+            color = mCursor.getInt(COLUMN_INDEX_TITLE);
+        }
+        super.onResume();
+    }
+    @Override
+    protected void onPause() {
+        //执行顺序在finish()之后，将选择的颜色存入数据库
+        super.onPause();
+        ContentValues values = new ContentValues();
+        values.put(NotePad.Notes.COLUMN_NAME_BACK_COLOR, color);
+        getContentResolver().update(mUri, values, null, null);
+    }
+    public void white(View view){
+        color = NotePad.Notes.DEFAULT_COLOR;
+        finish();
+    }
+    public void yellow(View view){
+        color = NotePad.Notes.YELLOW_COLOR;
+        finish();
+    }
+    public void blue(View view){
+        color = NotePad.Notes.BLUE_COLOR;
+        finish();
+    }
+    public void green(View view){
+        color = NotePad.Notes.GREEN_COLOR;
+        finish();
+    }
+    public void red(View view){
+        color = NotePad.Notes.RED_COLOR;
+        finish();
+    }
+    public void pink(View view){
+        color = NotePad.Notes.PINK_COLOR;
+        finish();
+    }
+    public void violet(View view){
+        color = NotePad.Notes.VIOLET_COLOR;
+        finish();
+    }
+
+}
+
+```
+3.在note_color.xml布局放置7个ImageButton文件实现更改背景颜色:
+
+```
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageButton
+        android:id="@+id/color_white"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorWhite"
+        android:onClick="white"/>
+    <ImageButton
+        android:id="@+id/color_yellow"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorYellow"
+        android:onClick="yellow"/>
+    <ImageButton
+        android:id="@+id/color_blue"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorBlue"
+        android:onClick="blue"/>
+    <ImageButton
+        android:id="@+id/color_green"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorGreen"
+        android:onClick="green"/>
+    <ImageButton
+        android:id="@+id/color_red"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorRed"
+        android:onClick="red"/>
+    <ImageButton
+        android:id="@+id/color_pink"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorPink"
+        android:onClick="pink"/>
+    <ImageButton
+        android:id="@+id/color_violet"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:background="@color/colorViolet"
+        android:onClick="violet"/>
+</LinearLayout>
+```
+4.NotePad中预定义好背景色，每一种颜色对应不同的int值
+```
+ public static final String COLUMN_NAME_MODIFICATION_DATE = "modified";
+        public static final String COLUMN_NAME_BACK_COLOR = "color";
+        public static final int DEFAULT_COLOR = 0; //白色
+        public static final int YELLOW_COLOR = 1; //黄色
+        public static final int BLUE_COLOR = 2; //蓝色
+        public static final int GREEN_COLOR = 3; //绿色
+        public static final int RED_COLOR = 4; //红色
+        public static final int PINK_COLOR = 5;//粉色
+        public static final int VIOLET_COLOR=6;// 浅紫色
+```
+
+5.在NotePadProvider表的地方添加颜色字段：
+
+```
+ @Override
+        public void onCreate(SQLiteDatabase db) {
+            db.execSQL("CREATE TABLE " + NotePad.Notes.TABLE_NAME + " ("
+                    + NotePad.Notes._ID + " INTEGER PRIMARY KEY,"
+                    + NotePad.Notes.COLUMN_NAME_TITLE + " TEXT,"
+                    + NotePad.Notes.COLUMN_NAME_NOTE + " TEXT,"
+                    + NotePad.Notes.COLUMN_NAME_CREATE_DATE + " INTEGER,"
+                    + NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE + " Text,"
+                    + NotePad.Notes.COLUMN_NAME_BACK_COLOR + " INTEGER"//color
+                    + ");");
+        }
+```
+
+6.运行显示截图：
+
