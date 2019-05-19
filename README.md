@@ -443,6 +443,6 @@ public class NoteColor extends Activity {
 
 💚功能：笔记便签——添加，更改，删除（可改变文本字体大小及颜色）
 
-1.![image](https://github.com/No-91/NotePad/blob/master/images/888.png)
+1.![image](https://github.com/No-91/NotePad/blob/master/images/88.png)
 
-![image](https://github.com/No-91/NotePad/blob/master/images/999.png)
+![image](https://github.com/No-91/NotePad/blob/master/images/99.png)
