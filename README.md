@@ -24,7 +24,7 @@
 
 三.功能截图以及部分代码展示
 
-功能一实现：NoteList中显示条目增加时间戳显示
+💚功能一实现：NoteList中显示条目增加时间戳显示
 1.在notelist_item.xml布局中，添加Textview显示时间戳
 ```
 <TextView
