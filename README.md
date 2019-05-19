@@ -58,6 +58,7 @@ Date nowTime = new Date(System.currentTimeMillis());
 ![image](https://github.com/No-91/NotePad/blob/master/images/111.png)
 
 💚功能二实现：添加笔记查询功能（根据标题查询）
+
 1.在NoteList.java中添加searchview实现查询功能
 
 ```
@@ -102,3 +103,5 @@ Date nowTime = new Date(System.currentTimeMillis());
     }
 ```
 2.运行显示效果：
+
+![iamge](https://github.com/No-91/NotePad/blob/master/images/222.png)
