@@ -48,3 +48,5 @@ Date nowTime = new Date(System.currentTimeMillis());
         ContentValues values = new ContentValues();
         values.put(NotePad.Notes.COLUMN_NAME_MODIFICATION_DATE, retStrFormatNowDate);
 ```
+3.运行显示效果：
+![image](https://github.com/No-91/NotePad/blob/master/images/)ZHB8_~(T3POEIM%249T%7B%40LJ8.png)
