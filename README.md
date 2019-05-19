@@ -21,9 +21,9 @@
 
 更改笔记背景颜色；
 
-(3)
+(3)笔记便签
 
-文本字体大小及颜色改变
+添加，更改，删除便签，以及改变文本字体大小及颜色
 
 
 三.功能截图以及部分代码展示
@@ -152,8 +152,103 @@ public class MyCursorAdapter extends SimpleCursorAdapter {
     }
 }
 ```
+2.在NoteEditor添加相应的读取颜色数据的onResume()
 
-2.在NoteColor.java文件处理更换背景颜色操作：
+```
+@Override
+    protected void onResume() {
+        super.onResume();
+
+        /*
+         * mCursor is initialized, since onCreate() always precedes onResume for any running
+         * process. This tests that it's not null, since it should always contain data.
+         */
+        if (mCursor != null) {
+            // Requery in case something changed while paused (such as the title)
+            mCursor.requery();
+
+            /* Moves to the first record. Always call moveToFirst() before accessing data in
+             * a Cursor for the first time. The semantics of using a Cursor are that when it is
+             * created, its internal index is pointing to a "place" immediately before the first
+             * record.
+             */
+            mCursor.moveToFirst();
+
+            // Modifies the window title for the Activity according to the current Activity state.
+            if (mState == STATE_EDIT) {
+                // Set the title of the Activity to include the note title
+                int colTitleIndex = mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_TITLE);
+                String title = mCursor.getString(colTitleIndex);
+                Resources res = getResources();
+                String text = String.format(res.getString(R.string.title_edit), title);
+                setTitle(text);
+
+                // Sets the title to "create" for inserts
+            } else if (mState == STATE_INSERT) {
+                setTitle(getText(R.string.title_create));
+            }
+
+            /*
+             * onResume() may have been called after the Activity lost focus (was paused).
+             * The user was either editing or creating a note when the Activity paused.
+             * The Activity should re-display the text that had been retrieved previously, but
+             * it should not move the cursor. This helps the user to continue editing or entering.
+             */
+
+            // Gets the note text from the Cursor and puts it in the TextView, but doesn't change
+            // the text cursor's position.
+            int colNoteIndex = mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_NOTE);
+            String note = mCursor.getString(colNoteIndex);
+            mText.setTextKeepState(note);
+
+            // Stores the original note text, to allow the user to revert changes.
+            if (mOriginalContent == null) {
+                mOriginalContent = note;
+            }
+
+            /*
+             * Something is wrong. The Cursor should always contain data. Report an error in the
+             * note.
+             */
+        } else {
+            setTitle(getText(R.string.error_title));
+            mText.setText(getText(R.string.error_message));
+        }
+        //读取颜色数据
+        int x = mCursor.getInt(mCursor.getColumnIndex(NotePad.Notes.COLUMN_NAME_BACK_COLOR));
+      
+        switch (x){
+            case NotePad.Notes.DEFAULT_COLOR:
+                mText.setBackgroundColor(Color.rgb(255, 255, 255));
+                break;
+            case NotePad.Notes.YELLOW_COLOR:
+                mText.setBackgroundColor(Color.rgb(247, 216, 133));
+                break;
+            case NotePad.Notes.BLUE_COLOR:
+                mText.setBackgroundColor(Color.rgb(165, 202, 237));
+                break;
+            case NotePad.Notes.GREEN_COLOR:
+                mText.setBackgroundColor(Color.rgb(161, 214, 174));
+                break;
+            case NotePad.Notes.RED_COLOR:
+                mText.setBackgroundColor(Color.rgb(244, 149, 133));
+                break;
+            case NotePad.Notes.PINK_COLOR:
+                mText.setBackgroundColor(Color.rgb(255, 192, 203));
+                break;
+            case NotePad.Notes.VIOLET_COLOR:
+                mText.setBackgroundColor(Color.rgb(221, 160, 221));
+                break;
+            default:
+                mText.setBackgroundColor(Color.rgb(255, 255, 255));
+                break;
+        }
+
+    }
+```
+
+
+3.在NoteColor.java文件处理更换背景颜色操作：
 ```
 public class NoteColor extends Activity {
     private Cursor mCursor;
@@ -226,7 +321,7 @@ public class NoteColor extends Activity {
 }
 
 ```
-3.在note_color.xml布局放置7个ImageButton文件实现更改背景颜色:
+4.在note_color.xml布局放置7个ImageButton文件实现更改背景颜色:
 
 ```
 <?xml version="1.0" encoding="utf-8"?>
@@ -284,7 +379,7 @@ public class NoteColor extends Activity {
         android:onClick="violet"/>
 </LinearLayout>
 ```
-4.NotePad中预定义好背景色，每一种颜色对应不同的int值
+5.NotePad中预定义好背景色，每一种颜色对应不同的int值
 ```
  public static final String COLUMN_NAME_MODIFICATION_DATE = "modified";
         public static final String COLUMN_NAME_BACK_COLOR = "color";
@@ -297,7 +392,7 @@ public class NoteColor extends Activity {
         public static final int VIOLET_COLOR=6;// 浅紫色
 ```
 
-5.在NotePadProvider表的地方添加颜色字段：
+6.在NotePadProvider表的地方添加颜色字段：
 
 ```
  @Override
@@ -313,7 +408,7 @@ public class NoteColor extends Activity {
         }
 ```
 
-6.运行显示截图：
+7.运行显示截图：
 
 更改之前默认为白色：
 
@@ -345,3 +440,7 @@ public class NoteColor extends Activity {
 
 ![image](https://github.com/No-91/NotePad/blob/master/images/777.png)
 
+
+💚功能：笔记便签——添加，更改，删除（可改变文本字体大小及颜色）
+
+1.
