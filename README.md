@@ -337,13 +337,11 @@ public class NoteColor extends Activity {
 ```
 在NoteEditor中添加changecolor()，在显示的7种颜色中选择一种背景颜色：
 
-默认背景为白色：
+默认背景为白色，选择颜色：
 
-
-选择颜色：
-
+![image](https://github.com/No-91/NotePad/blob/master/images/666.png)
 
 更改后：
 
-
+![image](https://github.com/No-91/NotePad/blob/master/images/777.png)
 
